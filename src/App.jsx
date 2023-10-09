@@ -1,8 +1,32 @@
+import * as yup from "yup";
+
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useFormik } from "formik";
 
 function App() {
   const [enablePasswordField, setEnablePasswordField] = useState(false);
+
+  const loginSchema = yup.object().shape({
+    email: yup
+      .string()
+      .email("This value is not a valid email address.")
+      .required("This field cannot be left blank."),
+    password: yup.string().required("Please enter a password."),
+  });
+
+  const onSubmit = () => {
+    console.log("Submitted");
+  };
+
+  const { values, handleChange, handleSubmit, errors } = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: loginSchema,
+    onSubmit,
+  });
 
   return (
     <>
@@ -22,7 +46,10 @@ function App() {
               <img src="/fs0a411g73DFKaj7K5d7.png" className="w-[76px]" />
             </div>
           </div>
-          <div className="py-[60px] px-[37px] mt-[20px]">
+          <form
+            onSubmit={handleSubmit}
+            className="py-[60px] px-[37px] mt-[20px]"
+          >
             <div className="flex justify-center flex-col items-center">
               <p className="text-[#5e5e5e] text-[24px] mt-[10px] mb-[15px]">
                 Log in
@@ -36,9 +63,18 @@ function App() {
                     Email
                   </label>
                   <input
+                    value={values.email}
                     id="email"
+                    onChange={handleChange}
                     className="border border-[#BBBBBB] rounded-[4px] text-[14px] px-[8px] py-[6px] text-[#5e5e5e] hover:border-[#888888] focus:outline-none focus:border-[#249bcd] focus:shadow-sm focus:shadow-[#8fdef4]"
                   />
+                  {errors.email ? (
+                    <span className="text-[14px] text-[#d93934] mt-2">
+                      {errors.email}
+                    </span>
+                  ) : (
+                    ""
+                  )}
                 </div>
                 {enablePasswordField && (
                   <div className="flex flex-col w-full">
@@ -50,8 +86,14 @@ function App() {
                     </label>
                     <input
                       id="password"
+                      value={values.password}
+                      onChange={handleChange}
+                      type="password"
                       className="border border-[#BBBBBB] rounded-[4px] text-[14px] px-[8px] py-[6px] text-[#5e5e5e] hover:border-[#888888] focus:outline-none focus:border-[#249bcd] focus:shadow-sm focus:shadow-[#8fdef4]"
                     />
+                    {/* {errors.password ? 
+                  <span className="text-[14px] text-[#d93934] mt-2">{errors.password}</span>  : ""
+                } */}
                   </div>
                 )}
               </div>
@@ -59,7 +101,9 @@ function App() {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setEnablePasswordField(true);
+                  if (!errors.email) {
+                    setEnablePasswordField(true);
+                  }
                 }}
                 className={`bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[30px] mb-[20px] ${
                   enablePasswordField && `hidden`
@@ -68,6 +112,7 @@ function App() {
                 Next
               </button>
               <button
+                type="button"
                 className={`bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[30px] mb-[20px] ${
                   !enablePasswordField && `hidden`
                 }`}
@@ -106,7 +151,7 @@ function App() {
                 Sign up
               </NavLink>
             </div>
-          </div>
+          </form>
         </div>
       </div>
       <div className="flex justify-center items-center gap-x-[8px] font-ciscosans mt-2">
