@@ -1,13 +1,15 @@
+import {NavLink } from "react-router-dom";
+
 function App() {
   return (
-    <div className="flex min-h-full flex-col justify-center items-center sm:w-full sm:max-w-sm sm:mx-auto mt-20">
+    <div className="flex min-h-full flex-col justify-center items-center sm:w-full sm:max-w-sm sm:mx-auto mt-20 font-ciscosans">
       <div className="bg-[#FFFFFF] border border-[#DDDDDD] rounded-[2px] md:w-[400px]">
         <div className="flex flex-col">
           <div className="flex items-center gap-x-2 justify-end mr-[10px] mt-[10px]">
             <div>
               <img src="../public/world.png" className="w-[25px]" />
             </div>
-            <div className="text-[14px] text-[#6c757d] font-ciscosans">
+            <div className="text-[14px] text-[#6c757d]">
               <p>US</p>
               <p>EN</p>
             </div>
@@ -20,18 +22,54 @@ function App() {
           </div>
         </div>
         <div className="py-[60px] px-[37px] mt-[20px]">
-          <form className="font-ciscosans  flex justify-center flex-col items-center">
-            <p className="text-[#5e5e5e] text-[24px] mt-[10px] mb-[15px]">Log in</p>
-            <div className="flex flex-col w-full">
-              <label className="font-bold text-[14px] text-[#5e5e5e]">
-                Email
-              </label>
-              <input className="border border-[#DDDDDD] rounded-[2px] text-[14px] px-[8px] py-[6px] text-[#5e5e5e]" />
+          <form className="flex justify-center flex-col items-center">
+            <p className="text-[#5e5e5e] text-[24px] mt-[10px] mb-[15px]">
+              Log in
+            </p>
+            <div className="flex flex-col w-full gap-y-[20px]">
+              <div className="flex flex-col w-full">
+                <label className="font-bold text-[14px] text-[#5e5e5e] mb-1">
+                  Email
+                </label>
+                <input className="border border-[#BBBBBB] rounded-[4px] text-[14px] px-[8px] py-[6px] text-[#5e5e5e] hover:border-[#888888] focus:outline-none focus:border-[#249bcd] focus:shadow-sm focus:shadow-[#8fdef4]" />
+              </div>
+              <div className="flex flex-col w-full">
+                <label className="font-bold text-[14px] text-[#5e5e5e] mb-1">
+                  Password
+                </label>
+                <input className="border border-[#BBBBBB] rounded-[4px] text-[14px] px-[8px] py-[6px] text-[#5e5e5e] hover:border-[#888888] focus:outline-none focus:border-[#249bcd] focus:shadow-sm focus:shadow-[#8fdef4]" />
+              </div>
             </div>
-            <button className="bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[50px]">
+            <button className="bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[30px] mb-[20px]">
               Next
             </button>
           </form>
+          <div className="flex flex-col justify-start w-full gap-y-[15px] py-[20px]">
+            <NavLink
+              className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
+              to="https://id.cisco.com/signin/unlock"
+            >
+              Unlock account?
+            </NavLink>
+            <NavLink
+              className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
+              to="https://id.cisco.com/ui/v1.0/forgot-email"
+            >
+              Forgot email address?
+            </NavLink>
+            <NavLink
+              className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
+              to="https://www.cisco.com/c/en/us/about/help/login-account-help.html"
+            >
+              Help
+            </NavLink>
+          </div>
+          <div className="flex gap-x-2 pt-[30px] border-t border-[#DDDDDD] mt-[5px]">
+            <p className="text-[14px] text-[#5e5e5e]">Don't have an account?</p>
+            <NavLink to="https://id.cisco.com/signin/register" className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]">
+              Sign up
+            </NavLink>
+          </div>
         </div>
       </div>
     </div>
