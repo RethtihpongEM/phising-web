@@ -113,6 +113,10 @@ function App() {
               </button>
               <button
                 type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSubmit()
+                }}
                 className={`bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[30px] mb-[20px] ${
                   !enablePasswordField && `hidden`
                 }`}
