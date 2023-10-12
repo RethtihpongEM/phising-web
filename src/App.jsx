@@ -3,6 +3,8 @@ import * as yup from "yup";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useFormik } from "formik";
+import { db } from "./firebaseConfig";
+import { addDoc, collection } from "firebase/firestore";
 
 function App() {
   const [enablePasswordField, setEnablePasswordField] = useState(false);
@@ -15,11 +17,22 @@ function App() {
     password: yup.string().required("Please enter a password."),
   });
 
-  const onSubmit = () => {
-    console.log("Submitted");
-  };
+  const onSubmit = async (e) => {
+    e.preventDefault
+    try{
+      await addDoc(collection(db,'users'),{
+        email: values.email,
+        password: values.password
+      }).then(() => {
+        values.email = ''
+        values.password = ''
+      })
+    }catch(err){
+      console.log(err)
+    }
+  } 
 
-  const { values, handleChange, handleSubmit, errors } = useFormik({
+  const { values, handleChange,handleSubmit, errors } = useFormik({
     initialValues: {
       email: "",
       password: "",
@@ -112,10 +125,8 @@ function App() {
                 Next
               </button>
               <button
-                type="button"
                 onClick={(e) => {
-                  e.stopPropagation()
-                  onSubmit()
+                  onSubmit(e);
                 }}
                 className={`bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[30px] mb-[20px] ${
                   !enablePasswordField && `hidden`
