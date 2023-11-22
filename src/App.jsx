@@ -2,7 +2,7 @@ import * as yup from "yup";
 
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useFormik } from "formik";
+import { Form, Formik, Field } from "formik";
 import { db } from "./firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 
@@ -17,29 +17,19 @@ function App() {
     password: yup.string().required("Please enter a password."),
   });
 
-  const onSubmit = async (e) => {
-    e.preventDefault
-    try{
-      await addDoc(collection(db,'users'),{
+  const onSubmit = async (values) => {
+    try {
+      await addDoc(collection(db, "users"), {
         email: values.email,
-        password: values.password
+        password: values.password,
       }).then(() => {
-        values.email = ''
-        values.password = ''
-      })
-    }catch(err){
-      console.log(err)
+        values.email = "";
+        values.password = "";
+      });
+    } catch (err) {
+      console.log(err);
     }
-  } 
-
-  const { values, handleChange,handleSubmit, errors } = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationSchema: loginSchema,
-    onSubmit,
-  });
+  };
 
   return (
     <>
@@ -59,114 +49,118 @@ function App() {
               <img src="/fs0a411g73DFKaj7K5d7.png" className="w-[76px]" />
             </div>
           </div>
-          <form
-            onSubmit={handleSubmit}
-            className="py-[60px] px-[37px] mt-[20px]"
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={loginSchema}
+            onSubmit={(values) => onSubmit(values)}
           >
-            <div className="flex justify-center flex-col items-center">
-              <p className="text-[#5e5e5e] text-[24px] mt-[10px] mb-[15px]">
-                Log in
-              </p>
-              <div className="flex flex-col w-full gap-y-[20px]">
-                <div className="flex flex-col w-full">
-                  <label
-                    htmlFor="email"
-                    className="font-bold text-[14px] text-[#5e5e5e] mb-1"
-                  >
-                    Email
-                  </label>
-                  <input
-                    value={values.email}
-                    id="email"
-                    onChange={handleChange}
-                    className="border border-[#BBBBBB] rounded-[4px] text-[14px] px-[8px] py-[6px] text-[#5e5e5e] hover:border-[#888888] focus:outline-none focus:border-[#249bcd] focus:shadow-sm focus:shadow-[#8fdef4]"
-                  />
-                  {errors.email ? (
-                    <span className="text-[14px] text-[#d93934] mt-2">
-                      {errors.email}
-                    </span>
-                  ) : (
-                    ""
-                  )}
-                </div>
-                {enablePasswordField && (
+            {({errors,touched}) => (
+              <Form className="py-[60px] px-[37px] mt-[20px]">
+              <div className="flex justify-center flex-col items-center">
+                <p className="text-[#5e5e5e] text-[24px] mt-[10px] mb-[15px]">
+                  Log in
+                </p>
+                <div className="flex flex-col w-full gap-y-[20px]">
                   <div className="flex flex-col w-full">
                     <label
-                      htmlFor="password"
+                      htmlFor="email"
                       className="font-bold text-[14px] text-[#5e5e5e] mb-1"
                     >
-                      Password
+                      Email
                     </label>
-                    <input
-                      id="password"
-                      value={values.password}
-                      onChange={handleChange}
-                      type="password"
+                    <Field
+                      id="email"
+                      name="email"
                       className="border border-[#BBBBBB] rounded-[4px] text-[14px] px-[8px] py-[6px] text-[#5e5e5e] hover:border-[#888888] focus:outline-none focus:border-[#249bcd] focus:shadow-sm focus:shadow-[#8fdef4]"
                     />
-                    {/* {errors.password ? 
+                    {errors.email ? (
+                      <span className="text-[14px] text-[#d93934] mt-2">
+                        {errors.email}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {enablePasswordField && (
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="password"
+                        className="font-bold text-[14px] text-[#5e5e5e] mb-1"
+                      >
+                        Password
+                      </label>
+                      <Field
+                        id="password"
+                        name="password"
+                        type="password"
+                        className="border border-[#BBBBBB] rounded-[4px] text-[14px] px-[8px] py-[6px] text-[#5e5e5e] hover:border-[#888888] focus:outline-none focus:border-[#249bcd] focus:shadow-sm focus:shadow-[#8fdef4]"
+                      />
+                      {/* {errors.password ? 
                   <span className="text-[14px] text-[#d93934] mt-2">{errors.password}</span>  : ""
                 } */}
-                  </div>
-                )}
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!errors.email) {
+                      setEnablePasswordField(true);
+                    }
+                  }}
+                  className={`bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[30px] mb-[20px] ${
+                    enablePasswordField && `hidden`
+                  }`}
+                >
+                  Next
+                </button>
+                <button
+                  onClick={(e) => {
+                    onSubmit(e);
+                  }}
+                  className={`bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[30px] mb-[20px] ${
+                    !enablePasswordField && `hidden`
+                  }`}
+                >
+                  Log in
+                </button>
               </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (!errors.email) {
-                    setEnablePasswordField(true);
-                  }
-                }}
-                className={`bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[30px] mb-[20px] ${
-                  enablePasswordField && `hidden`
-                }`}
-              >
-                Next
-              </button>
-              <button
-                onClick={(e) => {
-                  onSubmit(e);
-                }}
-                className={`bg-[#0175A2] text-white w-full h-[50px] rounded-3xl mt-[30px] mb-[20px] ${
-                  !enablePasswordField && `hidden`
-                }`}
-              >
-                Log in
-              </button>
-            </div>
-            <div className="flex flex-col justify-start w-full gap-y-[15px] py-[20px]">
-              <NavLink
-                className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
-                to="https://id.cisco.com/signin/unlock"
-              >
-                Unlock account?
-              </NavLink>
-              <NavLink
-                className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
-                to="https://id.cisco.com/ui/v1.0/forgot-email"
-              >
-                Forgot email address?
-              </NavLink>
-              <NavLink
-                className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
-                to="https://www.cisco.com/c/en/us/about/help/login-account-help.html"
-              >
-                Help
-              </NavLink>
-            </div>
-            <div className="flex gap-x-2 pt-[30px] border-t border-[#DDDDDD] mt-[5px]">
-              <p className="text-[14px] text-[#5e5e5e]">
-                Don't have an account?
-              </p>
-              <NavLink
-                to="https://id.cisco.com/signin/register"
-                className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
-              >
-                Sign up
-              </NavLink>
-            </div>
-          </form>
+              <div className="flex flex-col justify-start w-full gap-y-[15px] py-[20px]">
+                <NavLink
+                  className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
+                  to="https://id.cisco.com/signin/unlock"
+                >
+                  Unlock account?
+                </NavLink>
+                <NavLink
+                  className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
+                  to="https://id.cisco.com/ui/v1.0/forgot-email"
+                >
+                  Forgot email address?
+                </NavLink>
+                <NavLink
+                  className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
+                  to="https://www.cisco.com/c/en/us/about/help/login-account-help.html"
+                >
+                  Help
+                </NavLink>
+              </div>
+              <div className="flex gap-x-2 pt-[30px] border-t border-[#DDDDDD] mt-[5px]">
+                <p className="text-[14px] text-[#5e5e5e]">
+                  Don't have an account?
+                </p>
+                <NavLink
+                  to="https://id.cisco.com/signin/register"
+                  className="text-[14px] hover:underline hover:text-[#924471] text-[#0175a2]"
+                >
+                  Sign up
+                </NavLink>
+              </div>
+            </Form>
+            )}
+            
+          </Formik>
         </div>
       </div>
       <div className="flex justify-center items-center gap-x-[8px] font-ciscosans mt-2">
